@@ -1,0 +1,20 @@
+bin/
+target/
+test-output/
+.settings
+.classpath
+.project
+.idea
+.mvn
+.vscode
+build.log
+
+# Ignore Python related files and directories
+__pycache__/
+*.egg-info
+modules/python/**/build
+modules/python/**/log
+modules/python/**/out
+modules/python/**/in
+!modules/python/**/test/**/in
+modules/python/**/venv/
