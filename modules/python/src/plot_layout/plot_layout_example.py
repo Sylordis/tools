@@ -10,11 +10,11 @@ from matplotlib.axes import Axes
 from pathlib import Path
 from pandas import read_csv, DataFrame
 
-from plot import Plot
-from plot_configuration import PlotBins, PlotConfiguration
-from plot_layout import PlotLayout, PlotLayoutConfiguration
+from .plot import Plot
+from .plot_configuration import PlotBins, PlotConfiguration
+from .plot_layout import PlotLayout, PlotLayoutConfiguration
 
-DATA_PATH = Path("../../data")
+DATA_PATH = Path("../data")
 ANNOTATION_ALIGN_LEFT = (0.05, 0.95)
 ANNOTATION_ALIGN_RIGHT = (0.55, 0.95)
 
@@ -87,6 +87,3 @@ def main() -> int:
   for i, plot in enumerate(layout.plots):
     plot.plot_cfg = cfgs[i]
   layout.generate()
-
-if __name__ == '__main__':
-  main()

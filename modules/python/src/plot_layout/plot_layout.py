@@ -7,8 +7,8 @@ from matplotlib.figure import Figure
 from pathlib import Path
 from typing import Callable
 
-from plot import Plot
-from plot_configuration import Orientation
+from .plot import Plot
+from .plot_configuration import Orientation
 
 DEFAULT_PLOT_WIDTH: float = 3.8
 "Default graphical width for one plot or each subplot, in inches."

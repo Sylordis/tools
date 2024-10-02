@@ -15,10 +15,6 @@ requires-python = ">= 3.11"
 [projects.urls]
 Homepage = ""
 
-[projects.scripts]
-data-generation = "examples/data_generation_example:main"
-plot-layout = "examples/plot_layout_example:main"
-
 [tool.setuptools.packages.find]
 where = ["src"]
 

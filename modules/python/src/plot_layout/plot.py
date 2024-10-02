@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from matplotlib.axes import Axes
 
-from plot_configuration import PlotConfiguration
+from .plot_configuration import PlotConfiguration
 
 
 class Plot(ABC):

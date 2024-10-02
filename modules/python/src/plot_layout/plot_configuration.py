@@ -13,6 +13,7 @@ LABEL_NO_LEGEND = "_no_legend"
 
 
 class Orientation(StrEnum):
+    "Orientation setting, in terms of plots, X/horizontal, Y/vertical or both."
 
     X_AXIS = "x"
     "Orientation on X or Horizontal Axis."
@@ -27,6 +28,7 @@ class Orientation(StrEnum):
 
 AxisOrientation: TypeAlias = Literal[Orientation.X_AXIS, Orientation.Y_AXIS]
 "Usual orientation for axes, i.e. X/horizontal or Y/vertical. This is a subset of the Orientation enum."
+
 
 @dataclass
 class PlotBins:
@@ -58,6 +60,7 @@ class PlotBins:
     If left to None, matplotlib will format it automatically.
     """
 
+
 @dataclass
 class PlotAxisConfiguration:
     """
@@ -74,7 +77,9 @@ class PlotAxisConfiguration:
     minor_formatter: Formatter | None
       Minor formatter for the axis. Default is None.
     label: str | None
-      Label for the axis. If you're looking to set the axis label for a plot layout, consider updating the PlotLayoutConfiguration labels instead.
+      Label for the axis.
+
+      If you're looking to set the axis label for a plot layout, consider updating the PlotLayoutConfiguration labels instead.
       Default is None.
     """
 
@@ -88,8 +93,9 @@ class PlotAxisConfiguration:
     "Minor formatter for the axis."
     label: str | None = None
     """
-    Label for the axis. If you're looking to set a common axis label for a plot layout, use its configuration instead.
-    ```
+    Label for the axis.
+    
+    If you're looking to set a common axis label for a plot layout, use its configuration instead.
     """
 
     def __post_init__(self):
@@ -114,7 +120,7 @@ class PlotAxisConfiguration:
         """
         Applies its configuration to provided axis, if provided.
 
-        :param axes: Axis to apply the configuration to
+        :param axis: Axis to apply the configuration to
         """
         self._apply_text(axis)
         self._apply_bins(axis)
@@ -129,7 +135,11 @@ class PlotAxisConfiguration:
                 axis.set_ylabel(self.label)
 
     def _apply_bins(self, axis: Axes):
-        "Applies bin configuration, min, max, steps and labels."
+        """
+        Applies bin configuration, min, max, steps and labels.
+
+        :param axis: axis to apply the formatters to
+        """
         if self.bins is not None and self.bins.minimum is not None and self.bins.maximum is not None:
             ticks, labels = self._prepare_ticks()
             # Apply to correct axis
@@ -152,7 +162,11 @@ class PlotAxisConfiguration:
         return ticks, labels
 
     def _apply_formatters(self, axis: Axes):
-        "Applies major and minor formatter if any supplied."
+        """
+        Applies major and minor formatter if any supplied.
+
+        :param axis: axes to apply the formatters to
+        """
         if self.major_formatter is not None:
             if self.__is_x():
                 axis.xaxis.set_major_formatter(self.major_formatter)
@@ -187,7 +201,7 @@ class PlotConfiguration:
       Y axis configuration. Instantiated by default for y but instance can be empty if not set.
     show_legend: bool = True
       Whether the legend should be shown (`True`) or hidden (`False`).
-      
+
       In order to display only one legend for multiple subplots. Set every plot but the first one with `show_legend` to
       `False` in order for this to work.
       If used, make sure that series between plots have the same colours.
