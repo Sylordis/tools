@@ -12,7 +12,7 @@ from pandas import read_csv, DataFrame
 
 from .plot import Plot
 from .plot_configuration import PlotBins, PlotConfiguration
-from .plot_layout import PlotLayout, PlotLayoutConfiguration
+from .plot_layout import PlotLayout, PlotLayoutConfiguration, Orientation
 
 DATA_PATH = Path("../data")
 ANNOTATION_ALIGN_LEFT = (0.05, 0.95)
@@ -64,8 +64,9 @@ def main() -> int:
   if len(sys.argv) >= 2:
     output_path = Path(sys.argv[1])
   layout_cfg = PlotLayoutConfiguration()
-  layout_cfg.title="Example of Plot Layout"
-  layout_cfg.axis_labels=("Common X values", "relative frequency per bin")
+  layout_cfg.title = "Example of Plot Layout"
+  layout_cfg.axis_labels = ("Common X values", "relative frequency per bin")
+  layout_cfg.orientation = Orientation.X_AXIS
   layout = PlotLayout(output_path=output_path, configuration=layout_cfg)
 
   plot_cfg = PlotConfiguration()
@@ -73,8 +74,6 @@ def main() -> int:
   plot_cfg.x.bins = PlotBins(0.0, 5.0)
   plot_cfg.bar_colors = ['tab:blue', 'orangered']
   plot_cfg.bar_width = 0.05
-
-  cfgs = [plot_cfg.clone(title=f"Graph {i}", show_legend=(i == 1)) for i in range(1,7)]
 
   layout.plots = [
     FakeHistogramPlot(DATA_PATH / "histo1_data.csv", DATA_PATH / "histo1_statistics.csv"),
@@ -84,6 +83,7 @@ def main() -> int:
     FakeHistogramPlot(DATA_PATH / "histo1_data.csv", DATA_PATH / "histo1_statistics.csv"),
     FakeHistogramPlot(DATA_PATH / "histo2_data.csv", DATA_PATH / "histo2_statistics.csv"),
   ]
+  cfgs = [plot_cfg.clone(title=f"Graph {i+1}", show_legend=(i == 0)) for i in range(len(layout.plots))]
   for i, plot in enumerate(layout.plots):
     plot.plot_cfg = cfgs[i]
   layout.generate()

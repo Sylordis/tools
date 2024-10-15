@@ -10,9 +10,9 @@ from typing import Callable
 from .plot import Plot
 from .plot_configuration import Orientation
 
-DEFAULT_PLOT_WIDTH: float = 3.8
+DEFAULT_PLOT_WIDTH: float = 3.5
 "Default graphical width for one plot or each subplot, in inches."
-DEFAULT_PLOT_HEIGHT: float = 4.8
+DEFAULT_PLOT_HEIGHT: float = 3.8
 "Default graphical height for one plot or each subplot, in inches."
 REASONABLE_SIZE_PER_LINE: int = 4
 """
@@ -262,6 +262,10 @@ class PlotLayout:
         axes = axs.flatten()
         for i, plot in enumerate(self.plots):
             plot.generate(axes[i])
+        # Hide excess plots axes
+        excess = [i for i in range(len(self.plots), nrows*ncols)]
+        for i in excess:
+            axes[i].set_axis_off()
         self.configuration.apply_to_figure(fig)
         if self.output_path is not None:
             plt.savefig(self.output_path)
