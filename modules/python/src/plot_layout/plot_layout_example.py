@@ -12,7 +12,7 @@ from pandas import read_csv, DataFrame
 
 from .plot import Plot
 from .plot_configuration import PlotBins, PlotConfiguration
-from .plot_layout import PlotLayout, PlotLayoutConfiguration, Orientation
+from .plot_layout import PlotLayout, PlotLayoutConfiguration, Orientation, LayoutExpansionPolicy
 
 DATA_PATH = Path("../data")
 ANNOTATION_ALIGN_LEFT = (0.05, 0.95)
@@ -58,7 +58,7 @@ class FakeHistogramPlot(Plot):
       annotation_coords = ANNOTATION_ALIGN_LEFT if self.plot_cfg.x.bins.maximum is not None and mean >= self.plot_cfg.x.bins.maximum / 2 else ANNOTATION_ALIGN_RIGHT
       axis.annotate(annotation_text, annotation_coords, xycoords="axes fraction", fontsize="small", linespacing=1.5, va="top")
 
-
+# Uncomment and change some lines if you want to play around
 def main() -> int:
   output_path = None
   if len(sys.argv) >= 2:
@@ -66,7 +66,8 @@ def main() -> int:
   layout_cfg = PlotLayoutConfiguration()
   layout_cfg.title = "Example of Plot Layout"
   layout_cfg.axis_labels = ("Common X values", "relative frequency per bin")
-  layout_cfg.orientation = Orientation.X_AXIS
+  # layout_cfg.orientation = Orientation.X_AXIS
+  # layout_cfg.expansion_policy = LayoutExpansionPolicy.divided_ceil(5,2)
   layout = PlotLayout(output_path=output_path, configuration=layout_cfg)
 
   plot_cfg = PlotConfiguration()
@@ -82,7 +83,9 @@ def main() -> int:
     FakeHistogramPlot(DATA_PATH / "histo3_data.csv", DATA_PATH / "histo3_statistics.csv"),
     FakeHistogramPlot(DATA_PATH / "histo1_data.csv", DATA_PATH / "histo1_statistics.csv"),
     FakeHistogramPlot(DATA_PATH / "histo2_data.csv", DATA_PATH / "histo2_statistics.csv"),
-  ]
+    FakeHistogramPlot(DATA_PATH / "histo1_data.csv", DATA_PATH / "histo1_statistics.csv"),
+    FakeHistogramPlot(DATA_PATH / "histo2_data.csv", DATA_PATH / "histo2_statistics.csv"),
+  ] # * 6
   cfgs = [plot_cfg.clone(title=f"Graph {i+1}", show_legend=(i == 0)) for i in range(len(layout.plots))]
   for i, plot in enumerate(layout.plots):
     plot.plot_cfg = cfgs[i]
