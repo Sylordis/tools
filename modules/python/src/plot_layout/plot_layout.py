@@ -272,9 +272,6 @@ class PlotLayout:
             for i in excess:
                 axes[i].set_axis_off()
         self.configuration.apply_to_figure(fig)
-        self.save_or_show_figure()
-
-    def save_or_show_figure(self):
         if self.output_path is not None:
             plt.savefig(self.output_path)
             plt.close()
