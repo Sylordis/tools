@@ -242,10 +242,10 @@ class GeneratorOverlord:
                 f"Amount of provided files ({len(targets)}) does not match the amount of generators ({len(self.generators)})."
             )
         for generator, target in zip(self.generators, targets):
-            generator.output = Path(target)
+            generator.output = Path(target).resolve()
             if type(generator) is DataGenerator:
                 last_data_generator = generator
                 generator.generate_and_export(nsamples)
             elif type(generator) is StatisticsGenerator:
                 generator.generate_and_export(last_data_generator.generated_data)
-            self.logger.info(f"File created: {target}")
+            self.logger.info(f"File created: {generator.output}")

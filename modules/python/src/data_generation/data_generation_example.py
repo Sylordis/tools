@@ -15,7 +15,7 @@ from .data_generation import DataSeries, DataGenerator, StatisticsGenerator, Sta
 def main() -> int:
     rand = np.random.default_rng()
     serie_x = DataSeries(
-        "x", Generators.normal_distribution, FormatHelpers.to_float(2), mu=rand.ran
+        "x", Generators.normal_distribution, FormatHelpers.to_float(2), mu=rand.random()
     )
     generator: DataGenerator = DataGenerator(
         [serie_x],

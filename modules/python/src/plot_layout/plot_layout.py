@@ -251,22 +251,30 @@ class PlotLayout:
 
         If the output path is `None`, will show the plot instead of saving it.
         """
-        nrows, ncols = self.get_grid()
-        width = ncols * DEFAULT_PLOT_WIDTH
-        height = nrows * DEFAULT_PLOT_HEIGHT
-        fig, axs = plt.subplots(
-            nrows, ncols, sharex=True, sharey=True, figsize=(width, height)
-        )
-        # Axes are a numpy ndarray with 2 dimensions: rows and columns, it needs to be flattened first just in case
-        # If there's only 1 row, flatten will return the same array
-        axes = axs.flatten()
-        for i, plot in enumerate(self.plots):
-            plot.generate(axes[i])
-        # Hide excess plots axes
-        excess = [i for i in range(len(self.plots), nrows*ncols)]
-        for i in excess:
-            axes[i].set_axis_off()
+        if len(self.plots) == 1:
+            # Using the plot layout for only one plot is overkill but it works
+            fig, ax = plt.subplots()
+            self.plots[0].generate(ax)
+        else:
+            nrows, ncols = self.get_grid()
+            width = ncols * DEFAULT_PLOT_WIDTH
+            height = nrows * DEFAULT_PLOT_HEIGHT
+            fig, axs = plt.subplots(
+                nrows, ncols, sharex=True, sharey=True, figsize=(width, height)
+            )
+            # Axes are a numpy ndarray with 2 dimensions: rows and columns, it needs to be flattened first just in case
+            # If there's only 1 row, flatten will return the same array
+            axes = axs.flatten()
+            for i, plot in enumerate(self.plots):
+                plot.generate(axes[i])
+            # Hide excess plots axes
+            excess = [i for i in range(len(self.plots), nrows*ncols)]
+            for i in excess:
+                axes[i].set_axis_off()
         self.configuration.apply_to_figure(fig)
+        self.save_or_show_figure()
+
+    def save_or_show_figure(self):
         if self.output_path is not None:
             plt.savefig(self.output_path)
             plt.close()

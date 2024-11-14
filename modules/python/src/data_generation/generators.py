@@ -7,6 +7,16 @@ class Generators:
     "Contains different data generator that can be used as Callables to generate multiple samples."
 
     @staticmethod
+    def index(nsamples: int, start: int = 0) -> list:
+        """
+        Generates a list of indexes.
+
+        :param nsamples: number of samples to generate.
+        :param start: start of the index
+        """
+        return list(range(start, nsamples))
+
+    @staticmethod
     def normal_distribution(
         nsamples: int,
         mu: float | None = 0.0,
@@ -18,8 +28,8 @@ class Generators:
 
         :param nsamples: number of samples to generate.
         :param mu: mean value offset, random if None. Default is 0.
-        Standard normal distributions happen for mu = 0.
-        Random if `None` is provided (e.g.: [-1,1] * max_mu_factor).
+            Standard normal distributions happen for mu = 0.
+            Random if `None` is provided (e.g.: [-1,1] * max_mu_factor).
         :param sigma: variance of the values. The higher, the flatter and wider your distribution will be. Default is random [0,1].
         :param max_mu_factor: multiplier for mu representing the biggest possible mu, only if mu is not specified.
         :return: list of n samples from the distribution
@@ -29,7 +39,27 @@ class Generators:
         sigma_real = rand.random() if sigma is None else sigma
         generated = mu_real + sigma_real * rand.standard_normal(nsamples)
         return generated
+    
+    @staticmethod
+    def of(nsamples: int, population: list) -> list:
+        """
+        Generates random samples from a given population list.
 
+        :param nsamples: number of samples to generate.
+        :param population: population from which the samples will be taken.
+        :return: list of n samples from the population
+        """
+        return random.choices(population, k=nsamples)
+
+    @staticmethod
+    def scalar(nsamples: int, value) -> list:
+        """
+        Generates the same value.
+
+        :param nsamples: number of samples to generate.
+        :param value: the value of each sample.
+        """
+        return [value] * nsamples
 
 class SingleGenerators:
     "Contains different data generator that can be used as Callables to generate a single value."
