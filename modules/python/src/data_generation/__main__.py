@@ -1,3 +1,3 @@
-from .data_generation_example2 import main
+from .data_generation_example import main
 
 main()
