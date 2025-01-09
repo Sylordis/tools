@@ -82,6 +82,7 @@ class DataGenerator:
         self.output = output
         self.output_data_transformer = output_data_transformer
         self.generated_data: dict[str, list] = {}
+        self.logger = logging.getLogger()
 
     def generate_series(self, nsamples: int):
         "Generates all series with n samples."
@@ -103,6 +104,7 @@ class DataGenerator:
         :param output_file: custom file to export the data to
         """
         target = self.output if output_file is None else output_file
+        self.logger.info(f"Writing to file: {target}")
         data_transformed = (
             self.generated_data
             if self.output_data_transformer is None
@@ -112,7 +114,7 @@ class DataGenerator:
             pd.DataFrame(data_transformed).to_csv(path_or_buf=None, index=False)
         else:
             with open(target, mode="w", newline="\n") as datafile:
-                pd.DataFrame(data_transformed).to_csv(datafile, index=False)
+                pd.DataFrame(data_transformed).to_csv(datafile, index=False, sep='\t', encoding='utf-8')
 
 
 class StatisticsSeries:
@@ -242,6 +244,7 @@ class GeneratorOverlord:
                 f"Amount of provided files ({len(targets)}) does not match the amount of generators ({len(self.generators)})."
             )
         for generator, target in zip(self.generators, targets):
+            self.logger.info(f"{type(generator)} => {target}")
             generator.output = Path(target).resolve()
             if type(generator) is DataGenerator:
                 last_data_generator = generator

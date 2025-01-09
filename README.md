@@ -1,4 +1,4 @@
-# tools
+# Tools
 
 Hello, this is a private repo for tools developed through time. Help yourselves.
 
@@ -7,6 +7,8 @@ Hello, this is a private repo for tools developed through time. Help yourselves.
 ### Python modules
 
 Each module should contain an example file showcasing how it is supposed to be used.
+
+Modules in `solo` can be run as solitary python files.
 
 Examples
 : The example files can be launched using `python -m <module>` from the `src` directory.
@@ -20,6 +22,10 @@ A small python series of classes to be able to generate data if online generator
 #### Plot layout
 
 A set of classes used as a wrapper around [matplotlib](https://matplotlib.org/) in order to create big layouts of plots with subplots in an easier fashion.
+
+#### Grid generator
+
+A python tool to generate a grid with shapes.
 
 ## Help
 
@@ -35,6 +41,6 @@ This project is distributed under the [DBAD license](https://dbad-license.org/).
 
 ## Bug report
 
-Please report any bug you find at https://github.com/Sylordis/bash-library/issues
+Please report any bug you find at https://github.com/Sylordis/tools/issues
 
 Have fun, stay scripty!
