@@ -19,3 +19,4 @@ modules/python/**/out
 modules/python/**/in
 !modules/python/**/test/**/in
 modules/python/**/venv/
+modules/python/**/.venv/

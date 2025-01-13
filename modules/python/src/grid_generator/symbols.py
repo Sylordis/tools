@@ -13,7 +13,6 @@ class ShapeSymbols(StrEnum):
   ARROW = "A"
   CIRCLE = "C"
   DIAMOND = "D"
-  POINT = "P"
   RECTANGLE = "R"
   SQUARE = "Sq"
   STAR = "St"

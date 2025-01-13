@@ -5,6 +5,7 @@ import argparse
 import logging
 from pathlib import Path
 
+
 from .grid_drawing_tool import GridDrawingTool
 
 
@@ -43,5 +44,3 @@ def main():
     draw_tool.dist_dir = Path(args.dist)
   draw_tool.draw_all(args.input_file)
 
-
-main()

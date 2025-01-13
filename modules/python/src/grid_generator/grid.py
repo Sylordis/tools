@@ -1,5 +1,7 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
+from .color import Color
+from .orientation import Orientation
 from .shapes import Shape
 
 
@@ -9,13 +11,26 @@ class Cell:
   Programmative representation of a cell.
   """
   bg_color = None
-  content: list[Shape] = []
+  content: list[Shape] = field(default_factory=list)
+  orientation: Orientation = None
 
 
+@dataclass
+class GridConfig:
+  bg_color: Color = Color(1, 1, 1, 0)
+  "Color of the background."
+  border_color: Color = Color("#000000")
+  "Color of the grid border."
+  border_width: int = 1
+  "Border width (in px)."
+  cell_size: int = 15
+  "Size of the grid cells (in pixels)."
+  shapes_color: Color = Color("#FF0000")
+
+
+@dataclass
 class Grid:
   """
   Programmative representation of a grid.
   """
-
-  def __init__(self):
-    self.grid: list[list[Cell]] = []
+  content: list[list[Cell]] = field(default_factory=list)
