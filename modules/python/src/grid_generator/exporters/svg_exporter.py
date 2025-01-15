@@ -12,7 +12,7 @@ class SVGExporter(Exporter):
   """
 
   def __init__(self):
-    self._log = logging.getLogger(__class__.__name__)
+    super().__init__()
 
   def export(self, grid: Grid, cfg: GridConfig, output_file: Path):
     self._log.debug(f"Creating grid image to {output_file}")

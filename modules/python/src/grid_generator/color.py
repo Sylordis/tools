@@ -1,11 +1,14 @@
 from __future__ import annotations
+from typing import Any
+
 
 INT_BASE = 255
-COLORS_DICT: dict[str,str] = {
+COLORS_DICT: dict[str,Any] = {
     "black": "#000000",
     "blue": "#0000FF",
     "green": "#00FF00",
     "red": "#FF0000",
+    "transparent": [0, 0, 0, 0],
     "white": "#FFFFFF",
 }
 

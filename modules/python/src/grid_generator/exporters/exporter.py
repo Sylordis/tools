@@ -8,7 +8,7 @@ from ..grid import Grid, GridConfig
 class Exporter(ABC):
 
   def __init__(self):
-    self._log = logging.getLogger(__class__.__name__)
+    self._log = logging.getLogger()
 
   @abstractmethod
   def export(self, grid: Grid, cfg: GridConfig, output_file: Path):

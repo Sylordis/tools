@@ -4,10 +4,9 @@ from pathlib import Path
 import re
 
 
-from .color import Color
 from .exporters import Exporter, SVGExporter
 from .grid import Cell, Grid, GridConfig
-from .shapes import Shape
+from .shape_creator import ShapeCreator
 from .symbols import GridSymbols
 
 
@@ -27,11 +26,11 @@ class GridDrawingTool:
     """
     Creates a new drawing tool.
 
-    :param grid_cfg: configuration for the tool
     :param dist_dir: destination dir for generating the images
     """
-    self._log = logging.getLogger(__class__.__name__)
+    self._log = logging.getLogger()
     self.dist_dir: Path|None = dist_dir
+    self._shape_creator = ShapeCreator()
 
   def draw_all(self, files_str: list[str], cfg: GridConfig = None):
     """
@@ -70,7 +69,7 @@ class GridDrawingTool:
     grid = self.parse_grid_file(input_file)
     exporter: Exporter = SVGExporter()
     exporter.export(grid, cfg, output_file)
-    self._log.info(f"{output_file} created")
+    self._log.info(f"{input_file.name} => {output_file.name}")
 
   def parse_grid_file(self, input_file: Path) -> Grid:
     """
@@ -112,13 +111,6 @@ class GridDrawingTool:
           cell_cfg = cell_cfg[1:-1].split(GridSymbols.PARAMS_SEPARATOR)
         while (group:=next(it, None)) is not None:
           self._log.debug(f"group:{group}")
-          n = next(it)
-          if not n:
-            n = 1
-          shape = next(it)
-          shape_cfg = next(it)
-          if shape_cfg:
-            shape_cfg = shape_cfg[1:-1].split(GridSymbols.PARAMS_SEPARATOR)
-          self._log.debug(f"shape: x{n}, {shape}, {shape_cfg}")
-        # TODO do the rest
+          shapes = self._shape_creator.interpret_and_create_shapes(next(it), next(it), next(it))
+          cell.content.extend(shapes)
     return cell

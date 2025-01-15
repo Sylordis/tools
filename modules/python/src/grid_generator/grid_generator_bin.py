@@ -40,7 +40,7 @@ def main():
   args = ArgParser().parse()
   log_format = '%(levelname)s - %(message)s'
   if args.loglevel.upper() == 'DEBUG':
-     log_format = '{%(module)s:%(lineno)d} %(levelname)s - %(message)s'
+     log_format = '%(levelname)s[%(module)s:%(lineno)d]: %(message)s'
   logging.basicConfig(level=getattr(logging, args.loglevel.upper(), None), format=log_format)
   draw_tool = GridDrawingTool()
   if args.dist:
