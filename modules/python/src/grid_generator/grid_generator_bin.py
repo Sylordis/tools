@@ -38,7 +38,10 @@ class ArgParser:
 
 def main():
   args = ArgParser().parse()
-  logging.basicConfig(level=getattr(logging, args.loglevel.upper(), None))
+  log_format = '%(levelname)s - %(message)s'
+  if args.loglevel.upper() == 'DEBUG':
+     log_format = '{%(module)s:%(lineno)d} %(levelname)s - %(message)s'
+  logging.basicConfig(level=getattr(logging, args.loglevel.upper(), None), format=log_format)
   draw_tool = GridDrawingTool()
   if args.dist:
     draw_tool.dist_dir = Path(args.dist)

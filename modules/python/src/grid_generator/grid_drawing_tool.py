@@ -2,20 +2,21 @@ from dataclasses import dataclass
 import logging
 from pathlib import Path
 import re
-import svg
 
 
 from .color import Color
+from .exporters import Exporter, SVGExporter
 from .grid import Cell, Grid, GridConfig
 from .shapes import Shape
 from .symbols import GridSymbols
 
 
 @dataclass
-class ToolConfig:
-  "Color mode for the image."
+class DrawToolConfig:
   output_format = "SVG"
-
+  "Color mode for the image."
+  dest_dir: Path|None = None
+  "Destination directory for created images."
 
 class GridDrawingTool:
   """
@@ -38,7 +39,7 @@ class GridDrawingTool:
 
     :param files_str: list of string paths of files to generate images of
     """
-    print(files_str)
+    self._log.debug(f"files: {files_str}")
     files: list[tuple[Path,Path]] = []
     # Check input files and convert
     for file_str in files_str:
@@ -47,10 +48,11 @@ class GridDrawingTool:
         self._log.warning(f"File '{src_file}' does not exist. Skipping.")
       else:
         dist_file = self.dist_dir if self.dist_dir is not None else src_file.parent
-        dist_file = dist_file / f"{src_file.name}.png"
+        dist_file = dist_file / f"{src_file.name}"
+        dist_file = dist_file.with_suffix(".svg")
         files.append((src_file, dist_file))
     # Draw
-    for input,output in files:
+    for input, output in files:
       grid_config = GridConfig() if cfg is None else cfg
       try:
         self.draw_grid(input, output, grid_config)
@@ -66,50 +68,18 @@ class GridDrawingTool:
     """
     self._log.debug(f"{input_file} => {output_file}")
     grid = self.parse_grid_file(input_file)
-    self.create_grid_image(grid, cfg, output_file)
+    exporter: Exporter = SVGExporter()
+    exporter.export(grid, cfg, output_file)
+    self._log.info(f"{output_file} created")
 
-  def create_grid_image(self, grid: Grid, cfg:GridConfig, output_file: Path):
-    """
-    Creates an image from a grid object.
-
-    :param grid: object representation of the grid
-    :param output_file: output image file
-    """
-    self._log.debug(f"Creating grid image to {output_file}")
-    heightn = len(grid.content)
-    widthn = len(grid.content[0])
-    height_img = heightn * cfg.cell_size + (heightn+1) * cfg.border_width
-    width_img = widthn * cfg.cell_size + (widthn+1) * cfg.border_width
-    self._log.debug(f"Grid size: {widthn}x{heightn} => Image size: {width_img}x{height_img} px")
-    elements: list[svg.Element] = self.create_svg_elements(grid)
-    canvas = svg.SVG(
-      width=width_img,
-      height=height_img,
-      elements = elements
-    )
-    print(canvas)
-
-  def create_svg_elements(self, grid: Grid) -> list[svg.Element]:
-    """
-    :param grid: grid to create the svg elements from
-    :return: 
-    """
-    elements: list[svg.Element] = []
-    for y in range(len(grid.content)):
-      for x in range(len(grid.content[y])):
-        for shape in grid.content[y][x].content:
-          self._log.debug(shape)
-          # TODO convert shapes into SVG code https://pypi.org/project/svg.py/
-    return elements
-
-  def parse_grid_file(self, file: Path) -> Grid:
+  def parse_grid_file(self, input_file: Path) -> Grid:
     """
     Creates an object representation of the grid provided in a file.
 
     :param file: file to read
     :return: a grid object
     """
-    with open(file, newline='') as grid_file:
+    with open(input_file, newline='') as grid_file:
       grid:Grid = Grid()
       for line in grid_file:
         line_txt = line.rstrip()
@@ -133,10 +103,22 @@ class GridDrawingTool:
     cell = Cell()
     self._log.debug(f"parsing cell: '{cell_text}'")
     if len(cell_text) > 0:
-      pattern = r"^(\{[^}]+\})?([0-9]*[A-Za-z]+(\{[^}]+\})?)?(;[0-9]*[A-Za-z]+(\{[^}]+\})?)*$"
+      pattern = r"(\{[^}]+\})?((\d*)([A-Z][A-Za-z]*)(\{[^}]+\})?)?(;(\d*)([A-Z][A-Za-z]*)(\{[^}]+\})?)*"
       match = re.match(pattern, cell_text)
       if match:
-        for txt in list(match.groups()):
-          print(txt)
-        # TODO
+        it = iter(match.groups())
+        cell_cfg = next(it)
+        if cell_cfg:
+          cell_cfg = cell_cfg[1:-1].split(GridSymbols.PARAMS_SEPARATOR)
+        while (group:=next(it, None)) is not None:
+          self._log.debug(f"group:{group}")
+          n = next(it)
+          if not n:
+            n = 1
+          shape = next(it)
+          shape_cfg = next(it)
+          if shape_cfg:
+            shape_cfg = shape_cfg[1:-1].split(GridSymbols.PARAMS_SEPARATOR)
+          self._log.debug(f"shape: x{n}, {shape}, {shape_cfg}")
+        # TODO do the rest
     return cell

@@ -6,26 +6,35 @@ Hello, this is a private repo for tools developed through time. Help yourselves.
 
 ### Python modules
 
-Each module should contain an example file showcasing how it is supposed to be used.
+Each directory under `src` is a different module.
 
-Modules in `solo` can be run as solitary python files.
+Each module usually contains either:
 
-Examples
-: The example files can be launched using `python -m <module>` from the `src` directory.
-Unit tests
-: Some exist. Runnable with `pytest` at the root directory of the python modules.
+* an example file showcasing how it is supposed to be used, usually named `<module>_example.py`.
+* a bin file `<module>_bin.py`, which means the module can be run with `--help` argument to get some explanations.
+
+Files in the `standalone` directory can be run as solitary python files, as long as you have the correct requirements installed.
 
 #### Data generation
 
 A small python series of classes to be able to generate data if online generators are not sufficient.
 
+#### Grid generator
+
+A python tool to generate svg images with a grid and shapes from simple text files representations.
+
 #### Plot layout
 
 A set of classes used as a wrapper around [matplotlib](https://matplotlib.org/) in order to create big layouts of plots with subplots in an easier fashion.
 
-#### Grid generator
+## How to run
 
-A python tool to generate a grid with shapes.
+* Modules: from `src` directory `python -m <module> [args]`
+* Standalone: `python <path/to/file>`
+
+## Unit tests
+
+They exist. Runnable with `pytest` at the root directory of the python modules.
 
 ## Help
 

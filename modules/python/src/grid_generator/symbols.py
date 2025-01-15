@@ -6,6 +6,7 @@ class GridSymbols(StrEnum):
   CELL_SEPARATOR = "|"
   PARAMS_START = "{"
   PARAMS_END = "}"
+  PARAMS_SEPARATOR = ","
 
 
 class ShapeSymbols(StrEnum):
