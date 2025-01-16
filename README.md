@@ -19,10 +19,6 @@ Files in the `standalone` directory can be run as solitary python files, as long
 
 A small python series of classes to be able to generate data if online generators are not sufficient.
 
-#### Grid generator
-
-A python tool to generate svg images with a grid and shapes from simple text files representations.
-
 #### Plot layout
 
 A set of classes used as a wrapper around [matplotlib](https://matplotlib.org/) in order to create big layouts of plots with subplots in an easier fashion.
