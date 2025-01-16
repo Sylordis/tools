@@ -7,7 +7,7 @@ import re
 from .exporters import Exporter, SVGExporter
 from .grid import Cell, Grid, GridConfig
 from .shape_creator import ShapeCreator
-from .symbols import GridSymbols
+from .symbols import GridSymbol
 
 
 @dataclass
@@ -82,7 +82,7 @@ class GridDrawingTool:
       grid:Grid = Grid()
       for line in grid_file:
         line_txt = line.rstrip()
-        cells_str = [cell.strip() for cell in line_txt.split(GridSymbols.CELL_SEPARATOR)]
+        cells_str = [cell.strip() for cell in line_txt.split(GridSymbol.CELL_SEPARATOR)]
         self._log.debug(cells_str)
         cells = []
         for cell_str in cells_str:
@@ -108,7 +108,7 @@ class GridDrawingTool:
         it = iter(match.groups())
         cell_cfg = next(it)
         if cell_cfg:
-          cell_cfg = cell_cfg[1:-1].split(GridSymbols.PARAMS_SEPARATOR)
+          cell_cfg = cell_cfg[1:-1].split(GridSymbol.PARAMS_SEPARATOR)
         while (group:=next(it, None)) is not None:
           self._log.debug(f"group:{group}")
           shapes = self._shape_creator.interpret_and_create_shapes(next(it), next(it), next(it))

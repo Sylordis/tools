@@ -3,6 +3,7 @@ from pathlib import Path
 import svg
 
 from .exporter import Exporter
+from ..shapes import Shape, Circle
 from ..grid import Grid, GridConfig
 
 
@@ -22,8 +23,8 @@ class SVGExporter(Exporter):
     width_img = widthn * cfg.cell_size + cfg.border_width
     self._log.debug(f"Grid size: {widthn}x{heightn} => Image size: {width_img}x{height_img} px")
     elements: list[svg.Element] = []
-    elements.extend(self.create_grid_elements(grid, cfg))
-    elements.extend(self.create_svg_elements(grid))
+    elements.extend(self.create_svg_grid(grid, cfg))
+    elements.extend(self.create_svg_elements_in_grid(grid, cfg))
     canvas = svg.SVG(
       width=width_img,
       height=height_img,
@@ -33,7 +34,7 @@ class SVGExporter(Exporter):
     with open(output_file, "w") as write_file:
       write_file.write(str(canvas))
 
-  def create_grid_elements(self, grid: Grid, cfg: GridConfig) -> list[svg.Element]:
+  def create_svg_grid(self, grid: Grid, cfg: GridConfig) -> list[svg.Element]:
     """
     Creates the grid base for the svg.
 
@@ -46,15 +47,30 @@ class SVGExporter(Exporter):
     rect = svg.Rect(width="100%", height="100%", fill="url(#grid)")
     return [svg_defs, rect]
 
-  def create_svg_elements(self, grid: Grid) -> list[svg.Element]:
+  def create_svg_elements_in_grid(self, grid: Grid, cfg: GridConfig) -> list[svg.Element]:
     """
     :param grid: grid to create the svg elements from
     :return: 
     """
     elements: list[svg.Element] = []
-    for y in range(len(grid.content)):
-      for x in range(len(grid.content[y])):
-        for shape in grid.content[y][x].content:
+    for col in range(len(grid.content)):
+      for row in range(len(grid.content[col])):
+        cell_center = (0,0)
+        for shape in grid.content[col][row].content:
           self._log.debug(shape)
+          elements.append(self.create_element(shape, cfg, cell_center, grid, row, col))
           # TODO convert shapes into SVG code https://pypi.org/project/svg.py/
     return elements
+
+  def create_element(self, shape: Shape, cfg:GridConfig, cell_center: tuple[int,int], grid:Grid, row:int, col:int) -> svg.Element:
+    """
+    Dispatch the call to create an element from the Shape.
+    """
+    element = None
+    if isinstance(shape, Circle):
+      element = self.create_circle(shape, cfg, cell_center)
+    return element
+
+  def create_circle(self, shape: Circle, cfg: GridConfig, cell_center:tuple[int,int]) -> svg.Circle:
+    
+    return svg.Circle(cx=cell_center[0], cy=cell_center[1], fill=shape.fill, r=shape.radius)

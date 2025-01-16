@@ -3,8 +3,9 @@ import re
 from typing import Any
 
 
+from .orientation import Orientation, ORIENTATIONS
 from .shapes import Shape, Arrow, Circle
-from .symbols import GridSymbols, ShapeSymbols
+from .symbols import GridSymbol, ShapeSymbol, OrientationSymbol
 
 
 class ShapeCreator:
@@ -30,31 +31,53 @@ class ShapeCreator:
     if not n:
       n = 1
     if shape_cfg:
-      shape_cfg = shape_cfg[1:-1].split(GridSymbols.PARAMS_SEPARATOR)
+      shape_cfg = shape_cfg[1:-1].split(GridSymbol.PARAMS_SEPARATOR)
     self._log.debug(f"shape: x{n}, {shape_id}, {shape_cfg}")
     cfg = self.interpret_cfg(shape_cfg)
     match shape_id:
-      case ShapeSymbols.ARROW:
+      case ShapeSymbol.ARROW | "Arrow":
         shape = Arrow(**cfg)
-      case ShapeSymbols.CIRCLE:
+      case ShapeSymbol.CIRCLE | "Circle":
         shape = Circle(**cfg)
       case _:
         self._log.error(f"Unknown shape ID '{shape_id}'.")
     return [shape] * n
 
   def interpret_cfg(self, shape_cfg_txt: list[str]) -> dict[str,Any]:
+    """
+    Interprets the text of a configuration.
+
+    :param shape_cfg_txt: configuration text.
+    :return: a dictionary of parameters to inject into the shape constructor.
+    """
+    print([e.value for e in OrientationSymbol])
     cfg:dict[str,Any] = {}
+    size_indicator = []
     for param in shape_cfg_txt:
       match = re.match("([a-z-]+)=(.*)", param)
+      size_match = re.match("[0-9]+(px|cm|em|%)", param)
       if match:
         cfg[match.group(1).replace('-','_')] = match.group(2)
+      elif param in [e.value for e in OrientationSymbol]:
+        cfg["orientation"] = [e for e in ORIENTATIONS if e.shortcut == param][0]
+      elif size_match:
+        size_indicator.append(param)
       else:
         self._log.debug(param)
     # TODO
+    if len(size_indicator) > 0:
+      
     self._log.debug(cfg)
     return self.convert_cfg_values(cfg)
 
   def convert_cfg_values(self, old_cfg) -> dict[str,Any]:
+    """
+    Replaces certain dictionary entries that are programmatically correct.
+
+    :param old_cfg: 
+    :return: a dictionary of parameters to inject into the shape constructor.
+    """
     cfg:dict[str,Any] = old_cfg
     # TODO replace properties that has to be replaced
     return cfg
+

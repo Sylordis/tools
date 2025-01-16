@@ -1,7 +1,7 @@
 from enum import StrEnum
 
 
-class GridSymbols(StrEnum):
+class GridSymbol(StrEnum):
   "Symbols for the grid and generic"
   CELL_SEPARATOR = "|"
   PARAMS_START = "{"
@@ -9,7 +9,7 @@ class GridSymbols(StrEnum):
   PARAMS_SEPARATOR = ","
 
 
-class ShapeSymbols(StrEnum):
+class ShapeSymbol(StrEnum):
   "Symbols for shapes."
   ARROW = "A"
   CIRCLE = "C"
@@ -20,7 +20,7 @@ class ShapeSymbols(StrEnum):
   TRIANGLE = "T"
 
 
-class OrientationSymbols(StrEnum):
+class OrientationSymbol(StrEnum):
   "Symbols for orientations."
   BOTTOM = "B"
   DIAG_BOTTOM_LEFT = "Z"

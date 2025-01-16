@@ -1,2 +1,2 @@
 |A{T}|
-|C{color=green,50%}|
+|C{fill=green,50%}|
